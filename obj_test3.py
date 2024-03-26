@@ -2,7 +2,6 @@ import pygame
 import threading
 import time
 from Pluto import pluto
-from drone import drone
 import cv2
 import numpy as np
 
@@ -69,10 +68,11 @@ def joystick_control():
 
        
         if A:
-            me.takeoff()  # Arm the drone
+            me.take_off()  # Arm the drone
             print("arming", A)
         elif B:
-            me.land()  # Disarm the drone
+            me.rcThrottle = 100 
+            # Disarm the drone
             print("disarming", B)
 ######################################################################
 width = 640  # WIDTH OF THE IMAGE
@@ -80,12 +80,12 @@ height = 480  # HEIGHT OF THE IMAGE
 deadZone = 100
 ######################################################################
 
-me = drone()
-me.connect()
-me.rc[1] = 0
-me.rc[0] = 0
-me.rc[2] = 0
-me.rc[3] = 0
+me = pluto()
+
+me.rcPitch = 0
+me.rcRoll = 0
+me.rcThrottle = 0
+me.rcYaw = 0
 
 frameWidth = width
 frameHeight = height
@@ -236,20 +236,19 @@ while True:
     ################# FLIGHT
     ################# FLIGHT
     if dir == 1:
-        me.roll_speed = -50  # Adjust roll to make the drone move left
+        me.left()  # Adjust roll to make the drone move left
     elif dir == 2:
-        me.roll_speed = 50   # Adjust roll to make the drone move right
+        me.right()  # Adjust roll to make the drone move right
     elif dir == 3:
-        me.pitch_speed = 50  # Adjust pitch to make the drone move forward
+        me.forward = 50  # Adjust pitch to make the drone move forward
     elif dir == 4:
-        me.pitch_speed = -50  # Adjust throttle to make the drone move down
-
-  # Adjust drone movement based on object tracking
+        me.land()  # Adjust throttle to make the drone move down
     else:
-        me.rc[0] = 0
-        me.rc[1] = 0
-        me.rc[2] = 0
-        me.rc[3] = 0
+        # Stop movement if no direction is specified
+        me.rcRoll = 0
+        me.rcPitch = 0
+        me.rcThrottle = 0
+        me.rcYaw = 0
 
     stack = stackImages(0.6, ([img, result], [imgDil, imgContour]))
     cv2.imshow('Horizontal Stacking', stack)
