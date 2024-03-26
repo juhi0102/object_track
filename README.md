@@ -4,3 +4,5 @@ obj_detect_joy -  second logic of keeping drone in air and hover
 not worked now using joystick control for takeoff
 joystick working properly 
 obj test 3 - take only takeoff comand from joystick
+running succesfully
+obj_test 4 -same as above but using drone class
