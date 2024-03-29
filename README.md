@@ -2,7 +2,7 @@ oject_detection - detects and integrated
 obj_detect_test1 - integrated and drone taking off with blocks and not from mobile
 obj_detect_joy -  second logic of keeping drone in air and hover
 not worked now using joystick control for takeoff
-joystick working properly 
+joystick working properly (deleted)
 obj test 3 - take only takeoff comand from joystick
 running succesfully
 
@@ -36,7 +36,8 @@ now make drone to roll less
 -change drone conditions such that object detcted visits any of one direction once in a cycle.
 -read the command only once and not again and again.
 -read the command only for 0.1 seconds.
--added the rby_test colors detected actions
+-added the rby_test colors detected actions(this is shifted in test1)
+
 
 task
 -red color for takeoff
@@ -45,3 +46,6 @@ RBY_color_detect.py
 detects three colors red blue and yellow
 rby_test:testing for color detected actions
 test running properly
+
+now working on test1
+-working on rest of quadrants
