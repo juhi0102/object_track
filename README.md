@@ -36,8 +36,12 @@ now make drone to roll less
 -change drone conditions such that object detcted visits any of one direction once in a cycle.
 -read the command only once and not again and again.
 -read the command only for 0.1 seconds.
-
+-added the rby_test colors detected actions
 
 task
 -red color for takeoff
 -green color for land
+RBY_color_detect.py 
+detects three colors red blue and yellow
+rby_test:testing for color detected actions
+test running properly
