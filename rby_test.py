@@ -52,13 +52,13 @@ def process_contours(img, imgContour):
 
             # Perform actions based on centroid position
             if (cx < int(frameWidth / 2) - deadZone):
-                perform_actions("red")  # Assuming blue color triggers right action
+                perform_actions("blue")  # Assuming blue color triggers right action
             elif (cx > int(frameWidth / 2) + deadZone):
-                perform_actions("red")  # Assuming blue color triggers left action
+                perform_actions("yellow")  # Assuming blue color triggers left action
             elif (cy < int(frameHeight / 2) - deadZone):
-                perform_actions("yellow")  # Assuming yellow color triggers landing action
+                perform_actions("red")  # Assuming yellow color triggers landing action
             elif (cy > int(frameHeight / 2) + deadZone):
-                perform_actions("blue")  # Assuming red color triggers takeoff action
+                perform_actions("red")  # Assuming red color triggers takeoff action
 
 # Your existing code
 frameWidth = 640
