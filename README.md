@@ -47,5 +47,5 @@ detects three colors red blue and yellow
 rby_test:testing for color detected actions
 test running properly
 
-now working on test1
--working on rest of quadrants
+cam_test-object detection on pluto drone cam
+
