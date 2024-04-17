@@ -1,3 +1,4 @@
+import numpy as np
 from PlutoMultiwii import *
 from threading import Thread
 import time
@@ -23,7 +24,18 @@ class pluto():
         self.LAND = 2
         self.thread = Thread(target=self.writeFunction)
         self.thread.start()
+  
+    def set_roll(self, val):
+        # Ensure val stays within range [1000, 2000]
+        self.rcRoll = int(np.clip(val, 1000, 2000))
+        
+    def left(self):
+        print("Left Roll")
+        self.rcRoll = max(1000, self.rcRoll - 50)  # Decrease roll value, but not below 1000
 
+    def right(self):
+        print("Right Roll")
+        self.rcRoll = min(2000, self.rcRoll + 50)
     def arm(self):
         print("Arming")
         self.rcRoll = 1500
@@ -53,13 +65,13 @@ class pluto():
         print("Backward")
         self.rcPitch = 1300
 
-    def left(self):
-        print("Left Roll")
-        self.rcRoll = 1200
+    # def left(self):
+    #     print("Left Roll")
+    #     self.rcRoll = 1200
 
-    def right(self):
-        print("Right Roll")
-        self.rcRoll = 1600
+    # def right(self):
+    #     print("Right Roll")
+    #     self.rcRoll = 1600
 
     def left_yaw(self):
         print("Left Yaw")
