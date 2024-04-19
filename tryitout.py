@@ -1,10 +1,9 @@
-import cv2
-import pyautogui
-import numpy as np
 import threading
-from Joystick_controls import XboxController
-from Pluto import pluto
+import cv2
 
+from Pluto import pluto
+import numpy as np
+from Joystick_controls import XboxController
 class DroneController:
     def __init__(self):
         # Initialize Xbox controller and Pluto drone objects
@@ -53,34 +52,25 @@ joystick_thread.start()
 # Global variables to store cursor position
 x_pos, y_pos = 0, 0
 
+# Mouse event callback function
 def mouse_event(event, x, y, flags, param):
     global x_pos, y_pos
     if event == cv2.EVENT_MOUSEMOVE:
         x_pos, y_pos = x, y
-        # Map cursor position to normalized range [-1, 1]
-        normalized_x = mapping(x_pos, 0, 800, -1, 1)
 
         # Additional movement based on cursor position
-        if x_pos < 100:  # Move left
-            roll_value = mapping(normalized_x, -1, 0, -1, 0)
-            print(f"Moving Left: {roll_value}")
+        if x_pos < 300:  # Move left
+            drone_controller.drone.rcRoll = mapping(x_pos, 0, 300, 1000, 1500)
         elif x_pos > 500:  # Move right
-            roll_value = mapping(normalized_x, 0, 1, 0, 1)
-            print(f"Moving Right: {roll_value}")
+            drone_controller.drone.rcRoll = mapping(x_pos, 500, 800, 1500, 2000)
         else:  # Center position
-            roll_value = 0
+            drone_controller.drone.rcRoll = 1500
 
-        # Map the normalized roll value to the range [1000, 2000]
-        rcRoll = mapping(roll_value, -1, 1, 1000, 2000)
-
-        # Set the rcRoll value
-        drone_controller.drone.rcRoll = int(rcRoll)
-
-# Map a value from one range to another
 def mapping(value, in_min, in_max, out_min, out_max):
-    return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+    return int((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 
-
+# Example usage:
+# cv2.setMouseCallback(window_name, mouse_event)
 
 # Initialize webcam
 cap = cv2.VideoCapture(0)
@@ -88,6 +78,8 @@ cap = cv2.VideoCapture(0)
 # Set mouse event callback
 cv2.namedWindow('Webcam with Quadrants')
 cv2.setMouseCallback('Webcam with Quadrants', mouse_event)
+
+
 
 while True:
     ret, frame = cap.read()
