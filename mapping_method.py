@@ -1,12 +1,12 @@
-import threading
 import cv2
-from Pluto import pluto
 import numpy as np
-from Joystick_controls import XboxController
+from pynput import keyboard
+from Pluto import pluto
+import threading
+
 class DroneController:
     def __init__(self):
-        # Initialize Xbox controller and Pluto drone objects
-        self.joy = XboxController()
+        # Initialize Pluto drone object
         self.drone = pluto()
 
     def mapping(self, x, inMin, inMax, outMin, outMax):
@@ -19,34 +19,58 @@ class DroneController:
             return int(x)
 
     def control_loop(self):
-        while True:
-            [x, y, a, b, A, B, X, Y, rb, lb, rt, lt, ld, rd, ud, dd] = self.joy.read()
+        def on_press(key):
+            try:
+                if key.char == 'a':
+                    self.drone.rcYaw = 1000
+                elif key.char == 'd':
+                    self.drone.rcYaw = 2000
+                elif key.char == 'w':
+                    self.drone.rcPitch = 1000
+                elif key.char == 's':
+                    self.drone.rcPitch = 2000
+                elif key.char == 'q':
+                    self.drone.rcRoll = 1000
+                elif key.char == 'e':
+                    self.drone.rcRoll = 2000
+                elif key.char == 't':
+                    self.drone.take_off()
+                    print("Takeoff")
+                elif key.char == 'l':
+                    self.drone.land()
+                    print("Landing")
+                elif key.char == 'x':
+                    self.drone.disarm()
+                elif key.char == 'z':
+                    self.drone.decrease_height()
+                elif key.char == 'c':
+                    self.drone.increase_height()    
+            except AttributeError:
+                pass
 
-            self.drone.rcThrottle = self.mapping(y, 1, -1, 1000, 2000)
-            self.drone.rcYaw = self.mapping(x, -1, 1, 1000, 2000)
-            self.drone.rcPitch = self.mapping(b, 1, -1, 1000, 2000)
-            self.drone.rcRoll = self.mapping(a, -1, 1, 1000, 2000)
+        def on_release(key):
+            try:
+                if key.char == 'a' or key.char == 'd':
+                    self.drone.rcYaw = 1500
+                elif key.char == 'w' or key.char == 's':
+                    self.drone.rcPitch = 1500
+                elif key.char == 'q' or key.char == 'e':
+                    self.drone.rcRoll = 1500
+            except AttributeError:
+                pass
 
-            if A:
-                self.drone.arm()
-                print("Arming")
-            elif B:
-                self.drone.disarm()
-                print("Disarming")
-            elif Y:
-                self.drone.take_off()
-                print("Takeoff")
-            elif X:
-                self.drone.land()
-                print("Landing")
+        # Collect events until released
+        with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+            listener.join()
 
 # Create an instance of the DroneController class
 drone_controller = DroneController()
 
-# Start the joystick control loop in a separate thread
-joystick_thread = threading.Thread(target=drone_controller.control_loop)
-joystick_thread.daemon = True
-joystick_thread.start()
+# Start the control loop in a separate thread
+control_thread = threading.Thread(target=drone_controller.control_loop)
+control_thread.daemon = True
+control_thread.start()
+
 
 # Global variables to store cursor position
 x_pos, y_pos = 0, 0
@@ -59,10 +83,10 @@ def mouse_event(event, x, y, flags, param):
 
         # Additional movement based on cursor position
         if x_pos < 200:  # Move left
-            drone_controller.drone.rcRoll = mapping(x_pos, 0, 200, 1000, 1500)
+            drone_controller.drone.rcRoll = mapping(x_pos, 0, 200, 1400, 1500)
             print("Moving left:", drone_controller.drone.rcRoll)
         elif x_pos > 500:  # Move right
-            drone_controller.drone.rcRoll = mapping(x_pos, 500, 600, 1500, 2000)
+            drone_controller.drone.rcRoll = mapping(x_pos, 450, 600, 1500, 1600)
             print("Moving right:", drone_controller.drone.rcRoll)
         else:  # Center position
             drone_controller.drone.rcRoll = 1500
@@ -73,17 +97,12 @@ def mapping(value, in_min, in_max, out_min, out_max):
     return int((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 
 
-# Example usage:
-# cv2.setMouseCallback(window_name, mouse_event)
-
 # Initialize webcam
 cap = cv2.VideoCapture(0)
 
 # Set mouse event callback
 cv2.namedWindow('Webcam with Quadrants')
 cv2.setMouseCallback('Webcam with Quadrants', mouse_event)
-
-
 
 while True:
     ret, frame = cap.read()
