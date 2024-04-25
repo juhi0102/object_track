@@ -127,6 +127,7 @@ def track_yellow(frame):
                 print("Moving right:", drone_controller.drone.rcRoll)
             else:  # Center position in X direction
                 drone_controller.drone.rcRoll = 1500
+                print("center")
 
             if cy < 160:  # Move up
                 drone_controller.drone.rcPitch = 1600
@@ -136,11 +137,29 @@ def track_yellow(frame):
                 print("Moving backward:", drone_controller.drone.rcPitch)
             else:  # Center position in Y direction
                 drone_controller.drone.rcPitch = 1500
-    
-    # If no contours are found, stop the drone's movements
-    else:
-        drone_controller.drone.rcRoll = 1500
-        drone_controller.drone.rcPitch = 1500
+    # # Add values for the other four quadrants
+            # if cx > 210 and cx < 400 and cy < 160:  # Move up and right
+            #     drone_controller.drone.rcRoll = 1550
+                
+            #     print("Moving right:", drone_controller.drone.rcRoll)
+            # elif cx > 210 and cx < 400 and cy > 320:  # Move down and right
+            #     drone_controller.drone.rcRoll = 1550
+                
+            if cx > 400  and cy < 160:  # Move up and right
+                drone_controller.drone.rcRoll = 1550
+                print("Moving right:", drone_controller.drone.rcRoll)
+            elif cx > 400  and cy > 320:  # Move down and right
+                drone_controller.drone.rcRoll = 1550
+                
+                print("Moving  right:", drone_controller.drone.rcRoll)
+            elif cx < 210 and cy > 320:  # Move down and left
+                drone_controller.drone.rcRoll = 1450
+                
+                print("Moving  left:", drone_controller.drone.rcRoll)
+            elif cx < 210 and cy < 160:  # Move up and left
+                drone_controller.drone.rcRoll = 1450
+                
+                print("Moving  left:", drone_controller.drone.rcRoll)
 
 def mapping(value, in_min, in_max, out_min, out_max):
     return int((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
