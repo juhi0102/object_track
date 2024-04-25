@@ -5,7 +5,7 @@ from Pluto import pluto
 import threading
 
 class DroneController:
-    def _init_(self):
+    def __init__(self):
         # Initialize Pluto drone object
         self.drone = pluto()
 
@@ -120,11 +120,11 @@ def track_yellow(frame):
             
             # Control the drone based on centroid position
             if cx < 200:  # Move left
-                drone_controller.drone.rcRoll = mapping(cx, 0, 200,1700, 1500)
-                print("Moving right:", drone_controller.drone.rcRoll)
-            elif cx > 400:  # Move right
-                drone_controller.drone.rcRoll = mapping(cx, 400, 700,  1500, 1300)
+                drone_controller.drone.rcRoll = mapping(cx, 0, 200, 1300, 1500)
                 print("Moving left:", drone_controller.drone.rcRoll)
+            elif cx > 500:  # Move right
+                drone_controller.drone.rcRoll = mapping(cx, 500, 700, 1500, 1700)
+                print("Moving right:", drone_controller.drone.rcRoll)
             else:  # Center position
                 drone_controller.drone.rcRoll = 1500
                 print("Center position")
