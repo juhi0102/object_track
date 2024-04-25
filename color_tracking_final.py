@@ -118,23 +118,29 @@ def track_yellow(frame):
             # Display centroid position
             cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
             
-            # Control the drone based on centroid position
-            if cx < 200:  # Move left
-                drone_controller.drone.rcRoll = mapping(cx, 0, 200, 1300, 1500)
+            # Control the drone based on centroid position within quadrants
+            if cx < 210:  # Move left
+                drone_controller.drone.rcRoll = 1400
                 print("Moving left:", drone_controller.drone.rcRoll)
-            elif cx > 500:  # Move right
-                drone_controller.drone.rcRoll = mapping(cx, 500, 700, 1500, 1700)
+            elif cx > 400:  # Move right
+                drone_controller.drone.rcRoll = 1600
                 print("Moving right:", drone_controller.drone.rcRoll)
-            else:  # Center position
+            else:  # Center position in X direction
                 drone_controller.drone.rcRoll = 1500
-                print("Center position")
 
-            if cy < 200:  # Move up
-                drone_controller.drone.rcPitch = mapping(cy, 150, 0, 1500, 1700)
+            if cy < 160:  # Move up
+                drone_controller.drone.rcPitch = 1600
                 print("Moving forward:", drone_controller.drone.rcPitch)
-            elif cy > 300:  # Move down
-                drone_controller.drone.rcPitch = mapping(cy, 300, 500, 1500, 1300)
+            elif cy > 320:  # Move down
+                drone_controller.drone.rcPitch = 1400
                 print("Moving backward:", drone_controller.drone.rcPitch)
+            else:  # Center position in Y direction
+                drone_controller.drone.rcPitch = 1500
+    
+    # If no contours are found, stop the drone's movements
+    else:
+        drone_controller.drone.rcRoll = 1500
+        drone_controller.drone.rcPitch = 1500
 
 def mapping(value, in_min, in_max, out_min, out_max):
     return int((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
